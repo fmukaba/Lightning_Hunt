@@ -235,12 +235,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	
 	// Game Timer
 	var timeleft = 10;
+	var message = "";
 	var gameTimer = setInterval(function(){
 		if(timeleft <= 0){
 			clearInterval(gameTimer);
 			document.getElementById("countdown").innerHTML = "You lost !";
+			message = "YOU LOST";
 		} else {
 			document.getElementById("countdown").innerHTML = timeleft + " seconds remaining";
+			
+			message = "Time left: " + timeleft + " s";
 		}
 		if(timeRunning) {
 		  timeleft -= 1;
@@ -280,15 +284,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		}
 
 		// Timer
-		ctx.fillStyle = "rgb(250, 250, 250)";
-		ctx.font = "24px Helvetica";
-		ctx.textAlign = "left";
-		ctx.textBaseline = "top";
-		if (timeleft > 0 ) {
-			ctx.fillText("Time left: " + timeleft + " s", 40, 40);
-		}	else {
-			ctx.fillText("YOU LOST", 40, 40);
-		}
+		//if(timeRunning){
+			ctx.fillStyle = "rgb(250, 250, 250)";
+			ctx.font = "24px Helvetica";
+			ctx.textAlign = "left";
+			ctx.textBaseline = "top";
+			ctx.fillText(message, 40, 40);	
+		//}	
 	};
 
 	// The main game loop
