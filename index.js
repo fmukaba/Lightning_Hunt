@@ -30,14 +30,14 @@ var vert5Image = new Image();
 vert5Image.onload = function () {
 	vert5Ready = true;
 };
-vert5Image.src = "images/5V.png";
+vert5Image.src = "images/v5.png";
 
 var vert3Ready = false;
 var vert3Image = new Image();
 vert3Image.onload = function () {
 	vert3Ready = true;
 };
-vert3Image.src = "images/3V.png";
+vert3Image.src = "images/v3.png";
 
 // horizontal trees
 var hor5Ready = false;
@@ -45,14 +45,20 @@ var hor5Image = new Image();
 hor5Image.onload = function () {
 	hor5Ready = true;
 };
-hor5Image.src = "images/5H.png";
+hor5Image.src = "images/h5.png";
 
 var hor3Ready = false;
 var hor3Image = new Image();
 hor3Image.onload = function () {
 	hor3Ready = true;
 };
-hor3Image.src = "images/3H.png";
+hor3Image.src = "images/h3.png";
+
+// all audio
+var openBox = new sound("audio/bump.mp3", 0.2);
+var thunder = new sound("audio/thunder.mp3", 1.0);
+var backgroundMusic = new sound("audio/epic.mp3", 0.1);
+var wallBump = new sound("audio/bump.mp3", 0.3);
 
 // Game objects
 var hero = {
@@ -100,8 +106,8 @@ var keysDown = {};
 addEventListener("keydown", function (e) {
 	keysDown[e.keyCode] = true;
 	if(!interaction){
-		timeRunning = true;
-		new sound("audio/epic.mp3").play();
+		timeRunning = true;		
+		backgroundMusic.play();
 		interaction = true;
 	}
 }, false);
@@ -217,10 +223,11 @@ function withinBoundaries(new_x, new_y) {
 			(new_x + hero.width >= wall.x && new_x + hero.width <= (wall.x+wall.width) && new_y+hero.height >= wall.y && new_y+hero.height <= (wall.y+wall.height))
 		   )
 		{
+			wallBump.play();
 			return false;
 		}
 	}
-	// sound effect
+	
 	return true;
 }
 
@@ -298,7 +305,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		var now = Date.now();
 		var delta = now - then;
 
-		update(delta / 1000);
+		update(delta / 1500);
 		render();
 
 		then = now;
@@ -318,11 +325,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	main();
 });
 
-function sound(src) {
+function sound(src, volume) {
 	this.sound = document.createElement("audio");
 	this.sound.src = src;
+	this.sound.volume = volume;
 	this.sound.setAttribute("preload", "auto");
-	this.sound.setAttribute("muted", "muted");
+	//this.sound.setAttribute("volume", "0");
 	this.sound.setAttribute("controls", "none");
 	this.sound.style.display = "none";
 	document.body.appendChild(this.sound);
