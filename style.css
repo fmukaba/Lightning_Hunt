@@ -3,22 +3,21 @@ canvas {
 }
 
 .row {
-  display: flex;
+  display: inline; 
+  /*or flex?*/
 }
 
 .row:after {
-  content: "";
   display: table;
   clear: both;
 }
  
 .side {
-   float: left;
-   /* width: 50%;
-   padding: 10px;
-   border : 1px;
-   border-style: solid; */
-   height: inherit;
-   flex: 1;  
+  float: left;
+  padding-right: 20px;
+  /* border : 1px;
+  border-style: solid; */
+  height: inherit;
+  flex: 1;  
 }
   

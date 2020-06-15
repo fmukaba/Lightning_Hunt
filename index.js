@@ -265,15 +265,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		if(timeleft <= 0){
 			clearInterval(gameTimer);
 			inPlay = false;
-			message = "YOU LOST";
-			
+			message = "YOU LOST";			
 		} else {
 			message = "Time left: " + timeleft + " s";
 		}
 		if(timeRunning) {
 		  timeleft -= 1;
 		}
-
 	}, 1000);
 
 	
