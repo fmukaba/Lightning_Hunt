@@ -146,87 +146,6 @@ var setup = function () {
 };
 
 
-// Update game objects position
-var update = function (modifier) {
-	if(inPlay){
-		if (38 in keysDown) { // Player holding up
-			var new_x = hero.x;
-			var new_y = hero.y - (hero.speed * modifier);
-			if(withinBoundaries(new_x,new_y)) {
-				hero.y -= hero.speed * modifier;
-			}
-		}
-		if (40 in keysDown) { // Player holding down
-			var new_x = hero.x;
-			var new_y = hero.y + (hero.speed * modifier);
-			if(withinBoundaries(new_x,new_y)) {
-				hero.y += hero.speed * modifier;
-			}
-		}
-		if (37 in keysDown) { // Player holding left
-			var new_x = hero.x - (hero.speed * modifier);
-			var new_y = hero.y;
-			if(withinBoundaries(new_x,new_y)) {
-				hero.x -= hero.speed * modifier;
-			}	
-		}
-		if (39 in keysDown) { // Player holding right
-			var new_x = hero.x + (hero.speed * modifier);
-			var new_y = hero.y;
-			if(withinBoundaries(new_x,new_y)) {
-				hero.x += hero.speed * modifier;
-			}
-		}
-
-		// Are they touching?
-		if (
-			hero.x <= (chest1.x + 32)
-			&& chest1.x <= (hero.x + 32)
-			&& hero.y <= (chest1.y + 32)
-			&& chest1.y <= (hero.y + 32) 
-			) {
-				console.log("opened chest: found some writings 'a deep blue...', could this be helpful?");
-				bonus.play();
-				//window.alert("Found a hint : deep blue... ");
-				chest1Ready = false;
-				chest1.x = 0;
-				chest1.y = 0;
-				
-			}  
-		else if (
-				hero.x <= (chest2.x + 32)
-				&& chest2.x <= (hero.x + 32)
-				&& hero.y <= (chest2.y + 32)
-				&& chest2.y <= (hero.y + 32) 
-				)
-			{
-				console.log("opened treasure");
-				backgroundMusic.stop();
-				riddle.play();
-				//("What is green but blue?");
-				chest2.x = 0;
-				chest2.y = 0;
-				chest2Ready = false;
-				// var cl = new canvasLightning(canvas, canvas.width, canvas.height);				
-				// cl.init();
-			} 
-		else if ( 
-				hero.x <= (chest3.x + 32)
-				&& chest3.x <= (hero.x + 32)
-				&& hero.y <= (chest3.y + 32)
-				&& chest3.y <= (hero.y + 32)
-				)
-			{		
-				console.log("opened chest: lost time fighting fighting a snake");
-				timeleft-=10;
-				monster.play();
-				chest3Ready = false;
-				chest3.x = 0;
-				chest3.y = 0;
-			}
-	}	
-};
-
 // Knowing the size of the hero
 function withinBoundaries(new_x, new_y) {
 	for (var i = 0; i < allWalls.length; i++){
@@ -252,6 +171,106 @@ function withinBoundaries(new_x, new_y) {
 
 
 document.addEventListener('DOMContentLoaded', (event) => {
+	var promptArea = document.getElementById("prompts");
+	// Update game objects position
+	var update = function (modifier) {
+		if(inPlay){
+			if (38 in keysDown) { // Player holding up
+				var new_x = hero.x;
+				var new_y = hero.y - (hero.speed * modifier);
+				if(withinBoundaries(new_x,new_y)) {
+					hero.y -= hero.speed * modifier;
+				}
+			}
+			if (40 in keysDown) { // Player holding down
+				var new_x = hero.x;
+				var new_y = hero.y + (hero.speed * modifier);
+				if(withinBoundaries(new_x,new_y)) {
+					hero.y += hero.speed * modifier;
+				}
+			}
+			if (37 in keysDown) { // Player holding left
+				var new_x = hero.x - (hero.speed * modifier);
+				var new_y = hero.y;
+				if(withinBoundaries(new_x,new_y)) {
+					hero.x -= hero.speed * modifier;
+				}	
+			}
+			if (39 in keysDown) { // Player holding right
+				var new_x = hero.x + (hero.speed * modifier);
+				var new_y = hero.y;
+				if(withinBoundaries(new_x,new_y)) {
+					hero.x += hero.speed * modifier;
+				}
+			}
+
+			// Are they touching?
+			if (
+				hero.x <= (chest1.x + 32)
+				&& chest1.x <= (hero.x + 32)
+				&& hero.y <= (chest1.y + 32)
+				&& chest1.y <= (hero.y + 32) 
+				) 
+				{
+					bonus.play();
+					var p = document.createElement("p");
+					p.innerHTML = "<b>Orator</b>: You found a paper. It is written 'A deep blue...'. It might be helpful to remember.";
+					promptArea.appendChild(p);
+					chest1Ready = false;
+					chest1.x = 0;
+					chest1.y = 0;
+					
+				}  
+			else if (
+					hero.x <= (chest2.x + 32)
+					&& chest2.x <= (hero.x + 32)
+					&& hero.y <= (chest2.y + 32)
+					&& chest2.y <= (hero.y + 32) 
+					)
+				{
+					
+					backgroundMusic.stop();
+					riddle.play();
+					var p = document.createElement("p");
+					p.innerHTML = "<b>Haunted Island</b>: Ah You found my secret chest? Your life ends here if you cannot answer my riddle. If you do before your time is up, you will get the power to summon lighting and thunderstorms.<br>"
+								+ "Now Answer me: What is blue but not so blue?";
+					promptArea.appendChild(p);
+					
+					var input = document.createElement("input");
+					input.setAttribute("id", "riddleAnswer");
+					promptArea.appendChild(input);
+
+					var submitButton = document.createElement("button");
+					submitButton.innerText = "Respond";
+					submitButton.setAttribute("id", "riddleBtn");
+					promptArea.appendChild(submitButton);
+
+					
+					chest2.x = 0;
+					chest2.y = 0;
+					chest2Ready = false;
+					// var cl = new canvasLightning(canvas, canvas.width, canvas.height);				
+					// cl.init();
+				} 
+			else if ( 
+					hero.x <= (chest3.x + 32)
+					&& chest3.x <= (hero.x + 32)
+					&& hero.y <= (chest3.y + 32)
+					&& chest3.y <= (hero.y + 32)
+					)
+				{		
+					var p = document.createElement("p");
+					p.innerHTML = "<b>Orator</b>: You lost 10 seconds running away from a snake. <br> The island doesn't like your presence. Hurry up!";
+					promptArea.appendChild(p);
+					timeleft-=10;
+					monster.play();
+					chest3Ready = false;
+					chest3.x = 0;
+					chest3.y = 0;
+				}
+		}	
+	};
+
 	// Create the canvas
 	var canvas = document.getElementById("canvas");
 	var ctx = canvas.getContext("2d");
@@ -265,7 +284,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		if(timeleft <= 0){
 			clearInterval(gameTimer);
 			inPlay = false;
-			message = "YOU LOST";			
+			message = "YOU LOST";	
+			promptArea.innerHTML = "<b>Orator</b>: And another one fell. Would someone ever conquer this island's power?...";		
+			// PLAY gAME OVER sOUND
 		} else {
 			message = "Time left: " + timeleft + " s";
 		}
@@ -314,7 +335,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	};
 
 	// The main game loop
-	var prompted = false;
 	var main = function () {
 		
 		var now = Date.now();
@@ -333,14 +353,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	var w = window;
 	requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
-	// Let's play this game!
-	// if(!prompted){
-	// 	window.alert("Game intro");
-	// 	prompted=true;
-	// }
-	
 	var then = Date.now();
-	console.log(then);
 	setup();
 	main();
 	
