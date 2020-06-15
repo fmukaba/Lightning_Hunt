@@ -61,6 +61,7 @@ var thunder = new sound("audio/thunder.mp3", 1.0);
 var monster = new sound("audio/haunted.mp3", 0.3);
 var bonus = new sound("audio/bonus.mp3", 0.3);
 var riddle = new sound("audio/riddle.mp3", 0.3);
+var gameOver = new sound("audio/gameover.wav", 0.5);
 
 // Game objects
 var hero = {
@@ -284,9 +285,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		if(timeleft <= 0){
 			clearInterval(gameTimer);
 			inPlay = false;
-			message = "YOU LOST";	
-			promptArea.innerHTML = "<b>Orator</b>: And another one fell. Would someone ever conquer this island's power?...";		
-			// PLAY gAME OVER sOUND
+			heroReady = false;
+			backgroundMusic.stop();
+			riddle.stop();
+			message = "YOU LOST!";	
+			promptArea.innerHTML = "<b>Orator</b>: And another one fell. Would someone ever obtain the island's secret power?...";		
+			gameOver.play();
 		} else {
 			message = "Time left: " + timeleft + " s";
 		}
