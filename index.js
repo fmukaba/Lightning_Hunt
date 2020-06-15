@@ -326,16 +326,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 				message = "CONGRATULATIONS";
 				p.innerHTML = winningPrompt;
 				promptArea.appendChild(p);
-
-				var img2 = document.createElement("img");
-				img2.src = "images/bolt.png";
-				promptArea.appendChild(img2);
 				thunder.play();
 			}	
 			
 			var playAgainbtn = document.createElement("button");
 			playAgainbtn.innerText = "Play again";
-			playAgainbtn.setAttribute("id", "playAgainBtn");
+			playAgainbtn.setAttribute("class", "play");
 			promptArea.appendChild(playAgainbtn);
 			playAgainbtn.addEventListener("click", function(){
 				location.reload();
@@ -484,7 +480,6 @@ function sound(src, volume) {
 	this.sound.src = src;
 	this.sound.volume = volume;
 	this.sound.setAttribute("preload", "auto");
-	//this.sound.setAttribute("volume", "0");
 	this.sound.setAttribute("controls", "none");
 	this.sound.style.display = "none";
 	document.body.appendChild(this.sound);

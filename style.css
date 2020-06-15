@@ -20,7 +20,7 @@ canvas {
   flex: 1;  
 }
 
-button {  
+button.play {  
     padding: 15px;
     background-color:rgb(197, 245, 178);
     border: 10px rgb(4, 177, 168)  double;
@@ -28,7 +28,7 @@ button {
     border-radius: 30px;
 }
 
-button:hover {
+button.play:hover {
   background-color: rgb(113, 172, 238);
   border-color: gray;  
 }
