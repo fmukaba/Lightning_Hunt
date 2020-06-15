@@ -270,14 +270,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 						}
 					});
 
-					// var cl = new canvasLightning(canvas, canvas.width, canvas.height);			
-					// setupRAF();
-					// cl.init();						
 					chest2.x = 0;
 					chest2.y = 0;
-					chest2Ready = false;
-
-										
+					chest2Ready = false;										
 				} 
 			else if ( 
 					hero.x <= (chest3.x + 32)
@@ -285,18 +280,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
 					&& hero.y <= (chest3.y + 32)
 					&& chest3.y <= (hero.y + 32)
 					)
-				{	
+			{	
 					
-					var p = document.createElement("p");
-					p.innerHTML = "<b>Orator</b>: You lost 10 seconds running away from a snake. <br> The island doesn't like your presence. Hurry up!";
-					promptArea.appendChild(p);
-					timeleft-=10;
-					monster.play();
-					chest3Ready = false;
-					chest3.x = 0;
-					chest3.y = 0;
-					
-				}
+				var p = document.createElement("p");
+				p.innerHTML = "<b>Orator</b>: You lost 10 seconds running away from a snake. <br> The island doesn't like your presence. Hurry up!";
+				promptArea.appendChild(p);
+				timeleft-=10;
+				monster.play();
+				chest3Ready = false;
+				chest3.x = 0;
+				chest3.y = 0;	
+			}
 		}	
 	};
 
@@ -379,12 +373,75 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		}
 
 		// Show game status
-		ctx.fillStyle = "rgb(250, 250, 250)";
+		if(timeleft <= 10 && !won) {
+
+			ctx.fillStyle = "rgb(255, 0, 0)";
+		}
+		else{
+			ctx.fillStyle = "rgb(255, 255, 0)";
+		}
 		ctx.font = "24px Helvetica";
 		ctx.textAlign = "left";
 		ctx.textBaseline = "top";
 		ctx.fillText(message, 40, 40);	
 	};
+
+	// Thunder code take from:  https://codepen.io/mcdorli/pen/AXgmPJ
+	var size = 600;
+	var c = document.getElementById("canvas");
+	c.width = size;
+	c.height = size;
+	function createLightning() {
+		var center = {x: size / 2, y: 20};
+		var minSegmentHeight = 5;
+		var groundHeight = size - 20;	
+		var roughness = 2;
+		var maxDifference = size / 5;
+		var segmentHeight = groundHeight - center.y;
+		var lightning = [];
+		lightning.push({x: center.x, y: center.y});
+		lightning.push({x: Math.random() * (size - 100) + 50, y: groundHeight + (Math.random() - 0.9) * 50});
+		var currDiff = maxDifference;
+		while (segmentHeight > minSegmentHeight) {
+		  var newSegments = [];
+		  for (var i = 0; i < lightning.length - 1; i++) {
+			var start = lightning[i];
+			var end = lightning[i + 1];
+			var midX = (start.x + end.x) / 2;
+			var newX = midX + (Math.random() * 2 - 1) * currDiff;
+			newSegments.push(start, {x: newX, y: (start.y + end.y) / 2});
+		  }
+		  newSegments.push(lightning.pop());
+		  lightning = newSegments;
+		  
+		  currDiff /= roughness;
+		  segmentHeight /= 2;
+		}
+		return lightning;
+	  }
+	
+	
+	function renderThunder() {
+		var ctx = c.getContext("2d");
+		var color = "hsl(180, 80%, 80%)";
+		ctx.globalCompositeOperation = "lighter";
+		ctx.strokeStyle = color;
+		ctx.shadowColor = color;
+		ctx.fillStyle = color;
+		ctx.fillStyle = "hsla(0, 0%, 10%, 0.2)";
+		ctx.shadowBlur = 0;
+		ctx.globalCompositeOperation = "source-over";
+		ctx.fillRect(0, 0, size, size);
+		ctx.globalCompositeOperation = "lighter";
+		ctx.shadowBlur = 15;
+		var lightning = createLightning();
+		ctx.beginPath();
+		for (var i = 0; i < lightning.length; i++) {
+		  ctx.lineTo(lightning[i].x, lightning[i].y);
+		}
+		ctx.stroke();
+		requestAnimationFrame(renderThunder);
+	  }
 
 	// The main game loop
 	var main = function () {
@@ -398,7 +455,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		then = now;
 
 		// Request to do this again ASAP
-		requestAnimationFrame(main);
+		if(!won){
+			requestAnimationFrame(main);
+		} else {			
+			requestAnimationFrame(renderThunder);		
+		}
 	};
 
 	// Cross-browser support for requestAnimationFrame
@@ -427,3 +488,5 @@ function sound(src, volume) {
 	  this.sound.pause();
 	}
   }
+
+  
