@@ -55,10 +55,12 @@ hor3Image.onload = function () {
 hor3Image.src = "images/h3.png";
 
 // all audio
-var openBox = new sound("audio/bump.mp3", 0.2);
-var thunder = new sound("audio/thunder.mp3", 1.0);
 var backgroundMusic = new sound("audio/epic.mp3", 0.1);
 var wallBump = new sound("audio/bump.mp3", 0.3);
+var thunder = new sound("audio/thunder.mp3", 1.0);
+var monster = new sound("audio/haunted.mp3", 0.3);
+var bonus = new sound("audio/bonus.mp3", 0.3);
+var riddle = new sound("audio/riddle.mp3", 0.3);
 
 // Game objects
 var hero = {
@@ -98,6 +100,16 @@ allWalls.push({x: 455, y: 440, width: 108, height: 40, image: hor3Image});
 
 // interaction with page is needed before audio
 var interaction = false;
+
+// if player has not lost
+var inPlay = true;
+
+// hint for solving riddle
+var hasHint = false;
+var hint = ""; 
+
+// timer 
+var timeleft = 20; 
 var timeRunning = false;
 
 // Handle keyboard controls
@@ -106,9 +118,9 @@ var keysDown = {};
 addEventListener("keydown", function (e) {
 	keysDown[e.keyCode] = true;
 	if(!interaction){
-		timeRunning = true;		
-		backgroundMusic.play();
+		timeRunning = true;			
 		interaction = true;
+		backgroundMusic.play();
 	}
 }, false);
 
@@ -136,76 +148,83 @@ var setup = function () {
 
 // Update game objects position
 var update = function (modifier) {
-	
-	
-	if (38 in keysDown) { // Player holding up
-		var new_x = hero.x;
-		var new_y = hero.y - (hero.speed * modifier);
-		if(withinBoundaries(new_x,new_y)) {
-			hero.y -= hero.speed * modifier;
+	if(inPlay){
+		if (38 in keysDown) { // Player holding up
+			var new_x = hero.x;
+			var new_y = hero.y - (hero.speed * modifier);
+			if(withinBoundaries(new_x,new_y)) {
+				hero.y -= hero.speed * modifier;
+			}
 		}
-	}
-	if (40 in keysDown) { // Player holding down
-		var new_x = hero.x;
-		var new_y = hero.y + (hero.speed * modifier);
-		if(withinBoundaries(new_x,new_y)) {
-			hero.y += hero.speed * modifier;
+		if (40 in keysDown) { // Player holding down
+			var new_x = hero.x;
+			var new_y = hero.y + (hero.speed * modifier);
+			if(withinBoundaries(new_x,new_y)) {
+				hero.y += hero.speed * modifier;
+			}
 		}
-	}
-	if (37 in keysDown) { // Player holding left
-		var new_x = hero.x - (hero.speed * modifier);
-		var new_y = hero.y;
-		if(withinBoundaries(new_x,new_y)) {
-			hero.x -= hero.speed * modifier;
-		}	
-	}
-	if (39 in keysDown) { // Player holding right
-		var new_x = hero.x + (hero.speed * modifier);
-		var new_y = hero.y;
-		if(withinBoundaries(new_x,new_y)) {
-			hero.x += hero.speed * modifier;
+		if (37 in keysDown) { // Player holding left
+			var new_x = hero.x - (hero.speed * modifier);
+			var new_y = hero.y;
+			if(withinBoundaries(new_x,new_y)) {
+				hero.x -= hero.speed * modifier;
+			}	
 		}
-	}
+		if (39 in keysDown) { // Player holding right
+			var new_x = hero.x + (hero.speed * modifier);
+			var new_y = hero.y;
+			if(withinBoundaries(new_x,new_y)) {
+				hero.x += hero.speed * modifier;
+			}
+		}
 
-	// Are they touching?
-	if (
-		hero.x <= (chest1.x + 32)
-		&& chest1.x <= (hero.x + 32)
-		&& hero.y <= (chest1.y + 32)
-        && chest1.y <= (hero.y + 32) 
-		) {
-			console.log("opened chest1");
-			chest1Ready = false;
-			chest1.x = 0;
-			chest1.y = 0;
-			
-		}  
-	else if (
-			hero.x <= (chest2.x + 32)
-			&& chest2.x <= (hero.x + 32)
-			&& hero.y <= (chest2.y + 32)
-			&& chest2.y <= (hero.y + 32) 
-			)
-		{
-			console.log("opened chest2");
-			chest2.x = 0;
-			chest2.y = 0;
-			chest2Ready = false;
-		} 
-	else if ( 
-			hero.x <= (chest3.x + 32)
-			&& chest3.x <= (hero.x + 32)
-			&& hero.y <= (chest3.y + 32)
-			&& chest3.y <= (hero.y + 32)
-			)
-		{
-			// var cl = new canvasLightning(canvas, canvas.width, canvas.height);				
-			// cl.init();
-			console.log("opened treasure");
-			chest3Ready = false;
-			chest3.x = 0;
-			chest3.y = 0;
-		}	
+		// Are they touching?
+		if (
+			hero.x <= (chest1.x + 32)
+			&& chest1.x <= (hero.x + 32)
+			&& hero.y <= (chest1.y + 32)
+			&& chest1.y <= (hero.y + 32) 
+			) {
+				console.log("opened chest: found some writings 'a deep blue...', could this be helpful?");
+				bonus.play();
+				//window.alert("Found a hint : deep blue... ");
+				chest1Ready = false;
+				chest1.x = 0;
+				chest1.y = 0;
+				
+			}  
+		else if (
+				hero.x <= (chest2.x + 32)
+				&& chest2.x <= (hero.x + 32)
+				&& hero.y <= (chest2.y + 32)
+				&& chest2.y <= (hero.y + 32) 
+				)
+			{
+				console.log("opened treasure");
+				backgroundMusic.stop();
+				riddle.play();
+				//("What is green but blue?");
+				chest2.x = 0;
+				chest2.y = 0;
+				chest2Ready = false;
+				// var cl = new canvasLightning(canvas, canvas.width, canvas.height);				
+				// cl.init();
+			} 
+		else if ( 
+				hero.x <= (chest3.x + 32)
+				&& chest3.x <= (hero.x + 32)
+				&& hero.y <= (chest3.y + 32)
+				&& chest3.y <= (hero.y + 32)
+				)
+			{		
+				console.log("opened chest: lost time fighting fighting a snake");
+				timeleft-=10;
+				monster.play();
+				chest3Ready = false;
+				chest3.x = 0;
+				chest3.y = 0;
+			}
+	}	
 };
 
 // Knowing the size of the hero
@@ -240,17 +259,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	canvas.height = 600;
 
 	
-	// Game Timer
-	var timeleft = 10;
+	// Start Timer
 	var message = "";
 	var gameTimer = setInterval(function(){
 		if(timeleft <= 0){
 			clearInterval(gameTimer);
-			document.getElementById("countdown").innerHTML = "You lost !";
+			inPlay = false;
 			message = "YOU LOST";
-		} else {
-			document.getElementById("countdown").innerHTML = timeleft + " seconds remaining";
 			
+		} else {
 			message = "Time left: " + timeleft + " s";
 		}
 		if(timeRunning) {
@@ -282,7 +299,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		}
 		
 		// draw all walls
-		if( hor5Ready && hor3Ready && vert3Ready && vert5Ready){
+		if(hor5Ready && hor3Ready && vert3Ready && vert5Ready){
 			for(var i in allWalls) {
 				if(allWalls[i].image != null) {
 					ctx.drawImage(allWalls[i].image, allWalls[i].x, allWalls[i].y);
@@ -290,24 +307,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
 			}
 		}
 
-		// Timer
-		//if(timeRunning){
-			ctx.fillStyle = "rgb(250, 250, 250)";
-			ctx.font = "24px Helvetica";
-			ctx.textAlign = "left";
-			ctx.textBaseline = "top";
-			ctx.fillText(message, 40, 40);	
-		//}	
+		// Show game status
+		ctx.fillStyle = "rgb(250, 250, 250)";
+		ctx.font = "24px Helvetica";
+		ctx.textAlign = "left";
+		ctx.textBaseline = "top";
+		ctx.fillText(message, 40, 40);	
 	};
 
 	// The main game loop
+	var prompted = false;
 	var main = function () {
+		
 		var now = Date.now();
 		var delta = now - then;
 
 		update(delta / 1500);
 		render();
-
+		
 		then = now;
 
 		// Request to do this again ASAP
@@ -319,10 +336,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
 	// Let's play this game!
+	// if(!prompted){
+	// 	window.alert("Game intro");
+	// 	prompted=true;
+	// }
+	
 	var then = Date.now();
 	console.log(then);
 	setup();
 	main();
+	
 });
 
 function sound(src, volume) {

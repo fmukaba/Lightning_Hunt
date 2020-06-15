@@ -1,4 +1,24 @@
+canvas {
+  display: block;  
+}
 
-  canvas {
-    display: block;  
-  }
+.row {
+  display: flex;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+ 
+.side {
+   float: left;
+   /* width: 50%;
+   padding: 10px;
+   border : 1px;
+   border-style: solid; */
+   height: inherit;
+   flex: 1;  
+}
+  
