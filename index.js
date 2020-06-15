@@ -6,13 +6,13 @@ bgImage.onload = function () {
 };
 bgImage.src = "images/background.png";
 
-// Hero image
+// hero image
 var heroReady = false;
 var heroImage = new Image();
 heroImage.onload = function () {
 	heroReady = true;
 };
-heroImage.src = "images/hero.png";
+heroImage.src = "images/pirate.png";
 
 // Chest image
 var chest1Ready, chest2Ready, chest3Ready = false;
@@ -104,13 +104,16 @@ var interaction = false;
 
 // if player has not lost
 var inPlay = true;
+var won = false;
 
-// hint for solving riddle
-var hasHint = false;
-var hint = ""; 
+// answer to the riddle
+var correctAnswer = "sky";
+var winOrLose = "images/gameover.jpg"
+var faillingPrompt = "<b>Orator</b>: And another one fell. Would someone ever obtain the island's secret power?...";
+var winningPrompt = "<b>Orator</b>: Hooray. Now you can summon thunderstorms...";
 
 // timer 
-var timeleft = 20; 
+var timeleft = 40; 
 var timeRunning = false;
 
 // Handle keyboard controls
@@ -245,8 +248,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
 					submitButton.innerText = "Respond";
 					submitButton.setAttribute("id", "riddleBtn");
 					promptArea.appendChild(submitButton);
+					submitButton.addEventListener("click", function(){
+						var answer = "";
+						var userInnput = document.getElementById("riddleAnswer");
+						if (userInnput!=null) {
+							answer = userInnput.value;
+							userInnput.value = "";
+						}
 
-					
+						if (inPlay) {
+							if (answer === correctAnswer) {
+								winOrLose = "images/youwin.png"
+								won = true;
+								timeleft = -1;
+								// display thunder
+							}
+							else {
+								faillingPrompt = "<b>Orator</b>: Oops that was not correct. You will be missed brave soul...";
+								timeleft = -1;
+							}
+						}
+					});
+
+					// var cl = new canvasLightning(canvas, canvas.width, canvas.height);			
+					// setupRAF();
+					// cl.init();						
 					chest2.x = 0;
 					chest2.y = 0;
 					chest2Ready = false;
@@ -260,9 +286,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 					&& chest3.y <= (hero.y + 32)
 					)
 				{	
-					// var cl = new canvasLightning(canvas, canvas.width, canvas.height);			
-					// setupRAF();
-					// cl.init();	
+					
 					var p = document.createElement("p");
 					p.innerHTML = "<b>Orator</b>: You lost 10 seconds running away from a snake. <br> The island doesn't like your presence. Hurry up!";
 					promptArea.appendChild(p);
@@ -271,7 +295,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 					chest3Ready = false;
 					chest3.x = 0;
 					chest3.y = 0;
-					//thunder();
+					
 				}
 		}	
 	};
@@ -292,9 +316,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
 			heroReady = false;
 			backgroundMusic.stop();
 			riddle.stop();
-			message = "YOU LOST!";	
-			promptArea.innerHTML = "<b>Orator</b>: And another one fell. Would someone ever obtain the island's secret power?...";		
-			gameOver.play();
+			promptArea.innerHTML = "";
+
+			var img = document.createElement("img");
+			img.src = winOrLose;
+			promptArea.appendChild(img);
+
+			var p = document.createElement("p");
+			if(!won){
+				message = "YOU LOST!";		
+				p.innerHTML = faillingPrompt;
+				promptArea.appendChild(p);
+				gameOver.play();
+			} else {
+				message = "CONGRATULATIONS";
+				p.innerHTML = winningPrompt;
+				promptArea.appendChild(p);
+
+				var img2 = document.createElement("img");
+				img2.src = "images/bolt.png";
+				promptArea.appendChild(img2);
+				thunder.play();
+			}		
+		
 		} else {
 			message = "Time left: " + timeleft + " s";
 		}
