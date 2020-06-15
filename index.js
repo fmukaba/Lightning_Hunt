@@ -102,7 +102,7 @@ allWalls.push({x: 455, y: 440, width: 108, height: 40, image: hor3Image});
 // interaction with page is needed before audio
 var interaction = false;
 
-// if player has not lost
+// game has not ended
 var inPlay = true;
 var won = false;
 
@@ -224,7 +224,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 					chest1.x = 0;
 					chest1.y = 0;
 					
-				}  
+				} 
+				// Riddle chest 
 			else if (
 					hero.x <= (chest2.x + 32)
 					&& chest2.x <= (hero.x + 32)
@@ -257,11 +258,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 						}
 
 						if (inPlay) {
-							if (answer === correctAnswer) {
+							if (answer.toLowerCase() === correctAnswer) {
 								winOrLose = "images/youwin.png"
 								won = true;
 								timeleft = -1;
-								// display thunder
 							}
 							else {
 								faillingPrompt = "<b>Orator</b>: Oops that was not correct. You will be missed brave soul...";
@@ -331,8 +331,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 				img2.src = "images/bolt.png";
 				promptArea.appendChild(img2);
 				thunder.play();
-			}		
-		
+			}	
+			
+			var playAgainbtn = document.createElement("button");
+			playAgainbtn.innerText = "Play again";
+			playAgainbtn.setAttribute("id", "playAgainBtn");
+			promptArea.appendChild(playAgainbtn);
+			playAgainbtn.addEventListener("click", function(){
+				location.reload();
+			});
 		} else {
 			message = "Time left: " + timeleft + " s";
 		}
@@ -386,7 +393,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		ctx.fillText(message, 40, 40);	
 	};
 
-	// Thunder code take from:  https://codepen.io/mcdorli/pen/AXgmPJ
+	// Adapted thunder animation from:  https://codepen.io/mcdorli/pen/AXgmPJ
 	var size = 600;
 	var c = document.getElementById("canvas");
 	c.width = size;
@@ -488,5 +495,3 @@ function sound(src, volume) {
 	  this.sound.pause();
 	}
   }
-
-  
