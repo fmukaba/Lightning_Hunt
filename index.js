@@ -107,7 +107,7 @@ var inPlay = true;
 var won = false;
 
 // answer to the riddle
-var correctAnswer = "sky";
+var correctAnswer = "starting";
 var winOrLose = "images/gameover.jpg"
 var faillingPrompt = "<b>Orator</b>: And another one fell. Would someone ever obtain the island's secret power?...";
 var winningPrompt = "<b>Orator</b>: Hooray. Now you can summon thunderstorms...";
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 				{
 					bonus.play();
 					var p = document.createElement("p");
-					p.innerHTML = "<b>Orator</b>: You found a paper. It is written 'A deep blue...'. It might be helpful to remember.";
+					p.innerHTML = "<b>Orator</b>: You found a paper. It is written 'It is just the beginning...'. It might be helpful to remember.";
 					promptArea.appendChild(p);
 					chest1Ready = false;
 					chest1.x = 0;
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 					riddle.play();
 					var p = document.createElement("p");
 					p.innerHTML = "<b>Haunted Island</b>: Ah You found my secret chest? Your life ends here if you cannot answer my riddle. If you do before your time is up, you will get the power to summon lighting and thunderstorms.<br>"
-								+ "Now Answer me: What is blue but not so blue?";
+								+ "Now Answer me: What 8 letter word can have a letter taken away and it still makes a word. Take another letter away and it still makes a word. Keep on doing that until you have one letter left.<br> What is the word?";
 					promptArea.appendChild(p);
 					
 					var input = document.createElement("input");
