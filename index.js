@@ -113,7 +113,7 @@ var faillingPrompt = "<b>Orator</b>: And another one fell. Would someone ever ob
 var winningPrompt = "<b>Orator</b>: Hooray. Now you can summon thunderstorms...";
 
 // timer 
-var timeleft = 40; 
+var timeleft = 60; 
 var timeRunning = false;
 
 // Handle keyboard controls
@@ -150,7 +150,7 @@ var setup = function () {
 };
 
 
-// Knowing the size of the hero
+// Tells if the next move is going to hit a wall
 function withinBoundaries(new_x, new_y) {
 	for (var i = 0; i < allWalls.length; i++){
 		var wall = allWalls[i];	 
@@ -294,14 +294,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		}	
 	};
 
-	// Create the canvas
+	// Create a canvas
 	var canvas = document.getElementById("canvas");
 	var ctx = canvas.getContext("2d");
 	canvas.width = 600;
 	canvas.height = 600;
 
 	
-	// Start Timer
+	// Start Timer and prompt messages
 	var message = "";
 	var gameTimer = setInterval(function(){
 		if(timeleft <= 0){
