@@ -5,4 +5,5 @@ Fun little game that you can play [now](https://lightninghunt.azurewebsites.net)
   
     Html Canvas
     Deploying to Azure
+    Azure CLI
 
