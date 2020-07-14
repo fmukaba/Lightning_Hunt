@@ -1,5 +1,5 @@
 # LightningHunt
-Fun little game that you can play [now](https://lightninghunt.azurewebsites.net)!
+Fun little game that you can play [now](https://fxnolimit.github.io/Lightning_Hunt/)!
 
 ### What I have learned:
   
